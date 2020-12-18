@@ -1,0 +1,43 @@
+{
+  "name": "RESTful-web-services-with-nodejs-and-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint --fix .",
+    "start": "set DEBUG=app && nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ltquiambao/RESTful-Node.js-Express.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ltquiambao/RESTful-Node.js-Express/issues"
+  },
+  "homepage": "https://github.com/ltquiambao/RESTful-Node.js-Express#readme",
+  "dependencies": {
+    "debug": "^4.3.1",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.15.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^2.0.6"
+  },
+  "nodemonConfig": {
+    "restartable": "rs",
+    "ignore": [
+      "node_modules/**/node_modules"
+    ],
+    "delay": "2500",
+    "env": {
+      "NODE_ENV": "development",
+      "PORT": 4000
+    }
+  }
+}
