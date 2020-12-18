@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint --fix .",
-    "start": "set DEBUG=app && nodemon app.js",
+    "start": "set DEBUG=app,app:* && nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,7 +21,8 @@
   "homepage": "https://github.com/ltquiambao/RESTful-Node.js-Express#readme",
   "dependencies": {
     "debug": "^4.3.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.11.8"
   },
   "devDependencies": {
     "eslint": "^7.15.0",
