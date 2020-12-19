@@ -1,10 +1,10 @@
 const express = require('express');
 const path = require('path');
-const debug = require('debug')(`app:${path.basename(__filename, '.js')}`)
+const debug = require('debug')(`app:${path.basename(__filename, '.js')}`);
 
-const router = express.Router();
+function router(Book) {
+  const bookRouter = express.Router();
 
-function bookRouter(Books) {
   const queryHandler = (reqQuery) => {
     const query = {};
     if (reqQuery.title) query.title = reqQuery.title;
@@ -14,24 +14,60 @@ function bookRouter(Books) {
     return query;
   };
 
-  router.route('/books')
+  bookRouter.route('/books')
     .get((req, res) => {
       const query = queryHandler(req.query);
-      debug(query);
-      Books.find(query)
+      debug(`method: ${req.method}\nurl: ${req.url}\nquery: ${query}`);
+      Book.find(query)
         .then((books) => res.json(books))
         .catch((err) => res.send(err));
+    })
+    .post((req, res) => {
+      const book = new Book(req.body);
+      debug(`method: ${req.method}\nurl: ${req.url}\id: ${book.id}`);
+      book.save()
+        .then((book) => res.status(201).json(book));
     });
 
-  router.route('/books/:bookId')
-    .get((req, res) => {
-      const { bookId } = req.params;
-      Books.findById(bookId)
+  bookRouter.use('/books/:bookId', (req, res, next) => {
+    const { bookId } = req.params;
+    debug(`method: ${req.method}\nurl: ${req.url}\nid: ${bookId}`);
+    Book.findById(bookId)
+        .then((book) => {
+          if(book) {
+            req.book = book;
+            return next();
+          }
+          return res.sendStatus(404);
+        })
+        .catch((err) => res.send(err));
+  });
+
+  bookRouter.route('/books/:bookId')
+    .get((req, res) => res.json(req.book))
+    .put((req, res) => {
+      const { title, author, genre, read } = req.body;
+      const { book } = req;
+      book.title = title;
+      book.author = author;
+      book.genre = genre;
+      book.read = read;
+      book.save()
         .then((book) => res.json(book))
         .catch((err) => res.send(err));
-    });
+    })
+    .patch((req, res) => {
+      const { book } = req;
+      Object.entries(req.body).forEach((item) => {
+        const [ key, value ] = item; 
+        book[key] = key === '_id' ? book[key] : value;
+      });
+      book.save()
+        .then((book) => res.json(book))
+        .catch((err) => res.send(err));
+    })
 
-  return router;
+  return bookRouter;
 }
 
-module.exports = bookRouter;
+module.exports = router;
