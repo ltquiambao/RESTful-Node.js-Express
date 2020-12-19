@@ -1,5 +1,6 @@
 // require necessary packages
 const express = require('express');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const debug = require('debug')('app');
 
@@ -13,8 +14,11 @@ const app = express();
 // initialize db connection
 mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const BookModel = require('./models/bookModel');
-const bookRouter = require('./routes/bookRouter')(BookModel);
+const Book = require('./models/bookModel');
+const bookRouter = require('./routes/bookRouter')(Book);
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // router
 app.use('/api', bookRouter);
