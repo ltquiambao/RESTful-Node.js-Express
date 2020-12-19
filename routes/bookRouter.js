@@ -1,22 +1,20 @@
 const express = require('express');
-const path = require('path');
-const debug = require('debug')(`app:${path.basename(__filename, '.js')}`);
+const bookController = require('../controllers/bookController');
 
 function router(Book) {
   const bookRouter = express.Router();
-  const bookController = require('../controllers/bookController')(Book);
+  const controller = bookController(Book);
 
   bookRouter.route('/books')
-    .get(bookController.getByQuery)
-    .post(bookController.post);
+    .get(controller.getByQuery)
+    .post(controller.post);
 
-  // bookRouter.use('/books/:bookId', );
   bookRouter.route('/books/:bookId')
-    .all(bookController.checkIDExists)
-    .get(bookController.getByID)
-    .put(bookController.put)
-    .patch(bookController.patch)
-    .delete(bookController.deleteBook);
+    .all(controller.checkIDExists)
+    .get(controller.getByID)
+    .put(controller.put)
+    .patch(controller.patch)
+    .delete(controller.deleteBook);
 
   return bookRouter;
 }
