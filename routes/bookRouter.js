@@ -66,6 +66,12 @@ function router(Book) {
         .then((book) => res.json(book))
         .catch((err) => res.send(err));
     })
+    .delete((req, res) => {
+      const { book } = req;
+      book.remove()
+        .then(() => res.statusCode(204))
+        .catch((err) => res.send(err));
+    })
 
   return bookRouter;
 }
