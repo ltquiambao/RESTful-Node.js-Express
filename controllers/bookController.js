@@ -15,11 +15,25 @@ function bookController(Book) {
     const query = queryHandler(req.query);
     debug(`method: ${req.method}\nurl: ${req.url}\nquery: ${JSON.stringify(query)}}`);
     Book.find(query)
-      .then((books) => res.json(books))
+      .then((books) => {
+        const returnBooks = books.map((book) => {
+          const newBook = book.toJSON();
+          newBook.links = {};
+          newBook.links.self = `http://${req.headers.host}/api/books/${book._id}`;
+          return newBook;
+        });
+        return res.json(returnBooks);
+      })
       .catch((err) => res.send(err));
   };
 
-  const getByID = (req, res) => res.json(req.book);
+  const getByID = (req, res) => {
+    const { book } = req;
+    const returnBook = book.toJSON();
+    const genre = book.genre.replace(' ', '%20');
+    returnBook.links = { FilterByThisGenre: `http://${req.headers.host}/api/books?genre=${genre}` };
+    res.json(returnBook);
+  };
 
   const post = (req, res) => {
     const book = new Book(req.body);
