@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint --fix .",
     "start": "set DEBUG=app,app:* && nodemon app.js",
-    "test": "mocha tests/**/*Tests.js"
+    "test": "set DEBUG=app,app:* && mocha tests/**/*Tests.js"
   },
   "repository": {
     "type": "git",
