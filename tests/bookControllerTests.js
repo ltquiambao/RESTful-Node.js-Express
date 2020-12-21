@@ -1,39 +1,17 @@
-require('should');
-const sinon = require('sinon');
-const bookController = require('../controllers/bookController');
+// require('should');
+const testsLogic = require('./bookControllerTestsLogic');
 
 describe('Book Controller Tests:', () => {
   describe('Post', () => {
-    it('should not allow an empty title on post', () => {
-      // create a mock Book with 'save' method
-      class Book {
-        constructor(book) {
-          this.book = book;
-          this.save = () => {};
-        }
-      }
-
-      // mock request with missing 'title'
-      const req = {
-        body: {
-          author: 'John'
-        }
-      };
-
-      // mock res variable using sinon
-      const res = {
-        status: sinon.spy(),
-        send: sinon.spy(),
-        json: sinon.spy()
-      };
-
-      // run post method of book Controller
-      const controller = bookController(Book);
-      controller.post(req, res);
-
-      // check if the req without 'title' would respond back correctly
-      res.status.calledWith(400).should.equal(true, `Bad status ${res.status.args[0][0]}`);
-      res.send.calledWith('Title is required').should.equal(true);
-    });
+    it('should not allow an empty title on post', testsLogic.postWithEmptyTitle);
+  });
+  describe('Put', () => {
+    it('should not allow an empty title on put', testsLogic.putWithEmptyTitle);
+  });
+  describe('Patch', () => {
+    it('should return the same object with only change in \'author\' field', testsLogic.patchOnlyAuthor);
+  });
+  describe('Middleware - Check if ID exists', () => {
+    it('should throw a 404 error if ID doesn\'t exist ', testsLogic.nonExistentID);
   });
 });
