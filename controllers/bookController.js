@@ -37,7 +37,7 @@ function bookController(Book) {
 
   const post = (req, res) => {
     const book = new Book(req.body);
-    debug(`method: ${req.method}\nurl: ${req.url}\nid: ${book.id}`);
+    debug(`method: ${req.method}\nurl: ${req.url}\nbody: ${JSON.stringify(book)}`);
     if (!req.body.title) {
       res.status(400);
       return res.send('Title is required');
@@ -51,24 +51,32 @@ function bookController(Book) {
     const {
       title, author, genre, read
     } = req.body;
+    debug(`method: ${req.method}\nurl: ${req.url}\nbody: ${JSON.stringify(req.body)}`);
+    if (!title) {
+      res.status(400);
+      return res.send('Title is required');
+    }
     const { book } = req;
     book.title = title;
     book.author = author;
     book.genre = genre;
     book.read = read;
-    book.save()
-      .then((bookResponse) => res.json(bookResponse))
-      .catch((err) => res.send(err));
+    book.save();
+    return res.json(book);
   };
 
   const patch = (req, res) => {
     const { book } = req;
+    debug(`method: ${req.method}\nurl: ${req.url}\nbody: ${JSON.stringify(req.body)}`);
     Object.entries(req.body).forEach((item) => {
       const [key, value] = item;
       book[key] = key === '_id' ? book[key] : value;
     });
     book.save()
-      .then((bookResponse) => res.json(bookResponse))
+      .then((bookResponse) => {
+        res.status(200);
+        return res.json(bookResponse);
+      })
       .catch((err) => res.send(err));
   };
 
@@ -89,7 +97,8 @@ function bookController(Book) {
           req.book = book;
           return next();
         }
-        return res.sendStatus(404);
+        res.status(404);
+        return res.send('Book Not Found');
       })
       .catch((err) => res.send(err));
   };
